@@ -4,3 +4,4 @@ date,focus,case_file,note_file
 2025-03-01,"Gas/nonce/permission bug fixes and cleanup",tests/nonprod/blockchain_service/cases/2025-03-01.json,docs/nonprod/blockchain_service/daily/2025-03-01.md
 2025-03-02,"Blockchain README/runbook/env docs refresh",tests/nonprod/blockchain_service/cases/2025-03-02.json,docs/nonprod/blockchain_service/daily/2025-03-02.md
 2025-03-03,"Smart contract interface updates + endpoint mapping",tests/nonprod/blockchain_service/cases/2025-03-03.json,docs/nonprod/blockchain_service/daily/2025-03-03.md
+2025-03-04,"Hardhat/Besu scripts + network config validation",tests/nonprod/blockchain_service/cases/2025-03-04.json,docs/nonprod/blockchain_service/daily/2025-03-04.md
