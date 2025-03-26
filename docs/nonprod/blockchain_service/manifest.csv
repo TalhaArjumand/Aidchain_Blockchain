@@ -26,3 +26,4 @@ date,focus,case_file,note_file
 2025-03-23,"Blockchain README/runbook/env docs refresh",tests/nonprod/blockchain_service/cases/2025-03-23.json,docs/nonprod/blockchain_service/daily/2025-03-23.md
 2025-03-24,"Smart contract interface updates + endpoint mapping",tests/nonprod/blockchain_service/cases/2025-03-24.json,docs/nonprod/blockchain_service/daily/2025-03-24.md
 2025-03-25,"Hardhat/Besu scripts + network config validation",tests/nonprod/blockchain_service/cases/2025-03-25.json,docs/nonprod/blockchain_service/daily/2025-03-25.md
+2025-03-26,"Event/indexing/storage alignment with API",tests/nonprod/blockchain_service/cases/2025-03-26.json,docs/nonprod/blockchain_service/daily/2025-03-26.md
