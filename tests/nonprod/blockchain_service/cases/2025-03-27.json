@@ -1,0 +1,12 @@
+{
+  "date": "2025-03-27",
+  "pair": "blockchain+api",
+  "focus": "Queue-triggered on-chain tx workflow checks",
+  "repo": "Aidchain_Blockchain",
+  "objective": "Non-production validation fixture for queue-triggered on-chain tx workflow checks",
+  "checklist": [
+    "confirm non-production scripts execute",
+    "confirm fixture schema stays stable",
+    "confirm no runtime source files are modified"
+  ]
+}
