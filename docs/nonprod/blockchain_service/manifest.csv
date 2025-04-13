@@ -44,3 +44,4 @@ date,focus,case_file,note_file
 2025-04-10,"Queue-triggered on-chain tx workflow checks",tests/nonprod/blockchain_service/cases/2025-04-10.json,docs/nonprod/blockchain_service/daily/2025-04-10.md
 2025-04-11,"Contract tests + end-to-end tx verification",tests/nonprod/blockchain_service/cases/2025-04-11.json,docs/nonprod/blockchain_service/daily/2025-04-11.md
 2025-04-12,"Gas/nonce/permission bug fixes and cleanup",tests/nonprod/blockchain_service/cases/2025-04-12.json,docs/nonprod/blockchain_service/daily/2025-04-12.md
+2025-04-13,"Blockchain README/runbook/env docs refresh",tests/nonprod/blockchain_service/cases/2025-04-13.json,docs/nonprod/blockchain_service/daily/2025-04-13.md
