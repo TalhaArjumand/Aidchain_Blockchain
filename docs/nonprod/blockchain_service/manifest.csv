@@ -48,3 +48,4 @@ date,focus,case_file,note_file
 2025-04-14,"Smart contract interface updates + endpoint mapping",tests/nonprod/blockchain_service/cases/2025-04-14.json,docs/nonprod/blockchain_service/daily/2025-04-14.md
 2025-04-15,"Hardhat/Besu scripts + network config validation",tests/nonprod/blockchain_service/cases/2025-04-15.json,docs/nonprod/blockchain_service/daily/2025-04-15.md
 2025-04-16,"Event/indexing/storage alignment with API",tests/nonprod/blockchain_service/cases/2025-04-16.json,docs/nonprod/blockchain_service/daily/2025-04-16.md
+2025-04-17,"Queue-triggered on-chain tx workflow checks",tests/nonprod/blockchain_service/cases/2025-04-17.json,docs/nonprod/blockchain_service/daily/2025-04-17.md
