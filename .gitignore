@@ -9,3 +9,5 @@ build/
 
 
 
+# Ignore all node data folders
+besu/QBFT-Network/Node-*/data/
