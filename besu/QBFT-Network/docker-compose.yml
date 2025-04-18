@@ -1,0 +1,100 @@
+version: "3.8"
+
+services:
+  node1:
+    image: hyperledger/besu:23.7.3
+    container_name: node1
+    command: >
+      --data-path=/home/besu/data
+      --genesis-file=/home/besu/genesis.json
+      --rpc-http-enabled
+      --rpc-http-api=ETH,NET,QBFT
+      --rpc-http-port=8545
+      --p2p-port=30303
+      --host-allowlist=*
+    volumes:
+      - ./Node-1/data:/home/besu/data
+      - ./genesis.json:/home/besu/genesis.json
+    networks:
+      besu-net:
+        ipv4_address: 172.24.0.3
+    ports:
+      - "8545:8545"
+      - "30303:30303/udp"
+      - "30303:30303/tcp"
+
+  node2:
+    image: hyperledger/besu:23.7.3
+    container_name: node2
+    command: >
+      --data-path=/home/besu/data
+      --genesis-file=/home/besu/genesis.json
+      --bootnodes=enode://e6428650157a219449f58fade5d5fd8d9d74f91c31f380230f6b5a044957fc5e24a2c225f072728b0b4acfcc01359e7f3c002f5d1aa63d4dec32347f87803424@172.24.0.3:30303
+      --rpc-http-enabled
+      --rpc-http-api=ETH,NET,QBFT
+      --rpc-http-port=8546
+      --p2p-port=30304
+      --host-allowlist=*
+    volumes:
+      - ./Node-2/data:/home/besu/data
+      - ./genesis.json:/home/besu/genesis.json
+    networks:
+      besu-net:
+        ipv4_address: 172.24.0.4
+    ports:
+      - "8546:8546"
+      - "30304:30304/udp"
+      - "30304:30304/tcp"
+
+  node3:
+    image: hyperledger/besu:23.7.3
+    container_name: node3
+    command: >
+      --data-path=/home/besu/data
+      --genesis-file=/home/besu/genesis.json
+      --bootnodes=enode://e6428650157a219449f58fade5d5fd8d9d74f91c31f380230f6b5a044957fc5e24a2c225f072728b0b4acfcc01359e7f3c002f5d1aa63d4dec32347f87803424@172.24.0.3:30303
+      --rpc-http-enabled
+      --rpc-http-api=ETH,NET,QBFT
+      --rpc-http-port=8547
+      --p2p-port=30305
+      --host-allowlist=*
+    volumes:
+      - ./Node-3/data:/home/besu/data
+      - ./genesis.json:/home/besu/genesis.json
+    networks:
+      besu-net:
+        ipv4_address: 172.24.0.5
+    ports:
+      - "8547:8547"
+      - "30305:30305/udp"
+      - "30305:30305/tcp"
+
+  node4:
+    image: hyperledger/besu:23.7.3
+    container_name: node4
+    command: >
+      --data-path=/home/besu/data
+      --genesis-file=/home/besu/genesis.json
+      --bootnodes=enode://e6428650157a219449f58fade5d5fd8d9d74f91c31f380230f6b5a044957fc5e24a2c225f072728b0b4acfcc01359e7f3c002f5d1aa63d4dec32347f87803424@172.24.0.3:30303
+      --rpc-http-enabled
+      --rpc-http-api=ETH,NET,QBFT
+      --rpc-http-port=8548
+      --p2p-port=30306
+      --host-allowlist=*
+    volumes:
+      - ./Node-4/data:/home/besu/data
+      - ./genesis.json:/home/besu/genesis.json
+    networks:
+      besu-net:
+        ipv4_address: 172.24.0.6
+    ports:
+      - "8548:8548"
+      - "30306:30306/udp"
+      - "30306:30306/tcp"
+
+networks:
+  besu-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.24.0.0/16
