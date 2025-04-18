@@ -1,0 +1,359 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20SnapshotUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+
+import "./Operations.sol";
+import "./IchatsNft.sol";
+import "./IchatsFactory.sol";
+
+/// @custom:security-contact charles@withconvexity.com
+contract Chats is
+    Initializable,
+    ERC20Upgradeable,
+    ERC20BurnableUpgradeable,
+    ERC20SnapshotUpgradeable,
+    OwnableUpgradeable,
+    PausableUpgradeable,
+    UUPSUpgradeable,
+    ReentrancyGuardUpgradeable
+{
+    Operations public operations;
+    address public nftFactoryContractAddress;
+
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+    
+    event Issue(uint256 amount, address indexed mintedTo);
+    event Redeem(uint256 amount, address indexed redeemedFrom);
+    event Params(uint256 feeBasisPoints, uint256 maxFee);
+
+    uint256 public basisPointsRate;
+    uint256 public maximumFee;
+    uint256 public totalIssued;
+    uint256 public totalRedeemed;
+    
+    function initialize(address _operations) public initializer {
+        __ERC20_init("CHATS", "CHS");
+        __ERC20Burnable_init();
+        __ERC20Snapshot_init();
+        __Ownable_init();
+        __Pausable_init();
+        __UUPSUpgradeable_init();
+        __ReentrancyGuard_init();
+
+        operations = Operations(_operations);
+        basisPointsRate = 0;
+        maximumFee = 0;
+    }
+
+    function snapshot() public onlyOwner {
+        _snapshot();
+    }
+
+    function pause() public onlyOwner {
+        _pause();
+    }
+
+    function unpause() public onlyOwner {
+        _unpause();
+    }
+
+    function decimals() public pure override returns (uint8) {
+        return 6;
+    }
+
+    /**
+     * @dev Issue a new amount of tokens; minted tokens go to `_mintedTo`.
+     * @param _amount Number of tokens to be issued.
+     */
+    function mint(uint256 _amount, address _mintedTo)
+        public
+        nonReentrant
+        onlyOwner
+    {
+        // require(operations.CheckUserList(_mintedTo), "User not allowed");
+        require(!operations.isBlackListedAddress(_mintedTo), "Account is BlackListed");
+        _mint(_mintedTo, _amount);
+        totalIssued = totalIssued + _amount;
+        emit Issue(_amount, _mintedTo);
+    }
+
+    /**
+     * @dev Redeems `_amount` of tokens from caller's balance.
+     */
+    function redeem(uint256 _amount) public {
+        // require(operations.CheckUserList(_msgSender()), "User not allowed");
+        require(!operations.isBlackListedAddress(_msgSender()), "Account is BlackListed");
+        require(totalSupply() >= _amount, "Total supply < amount");
+        require(balanceOf(_msgSender()) >= _amount, "Insufficient balance");
+        _burn(_msgSender(), _amount);
+        totalRedeemed = totalRedeemed + _amount;
+        emit Redeem(_amount, _msgSender());
+    }
+
+    function setParams(uint256 newBasisPoints, uint256 newMaxFee) public onlyOwner {
+        require(newBasisPoints < 200, "Fee basis points < 200");
+        require(newMaxFee < 5, "Max fee < 50"); // presumably 5 means 5 * 10^decimals
+
+        basisPointsRate = newBasisPoints;
+        maximumFee = newMaxFee * (10 ** decimals());
+
+        emit Params(basisPointsRate, maximumFee);
+    }
+
+    /**
+     * @dev Transfer tokens to `_to`, subtracting possible fee if needed.
+     */
+    function transfer(address _to, uint256 _value) public override returns (bool) {
+        require(!operations.isBlackListedAddress(msg.sender), "Sender BlackListed");
+        require(!operations.isBlackListedAddress(_to), "Recipient BlackListed");
+
+        uint256 fee = (_value * basisPointsRate) / 10000;
+        if (fee > maximumFee) {
+            fee = maximumFee;
+        }
+        if (fee > 0) {
+            _transfer(_msgSender(), owner(), fee);
+        }
+
+        _transfer(_msgSender(), _to, _value - fee);
+        return true;
+    }
+
+    /**
+     * @dev Transfer tokens from `_from` to `_to`, subtracting fee if needed.
+     */
+    function transferFrom(
+        address _from,
+        address _to,
+        uint256 _value
+    ) public override returns (bool) {
+        require(!operations.isBlackListedAddress(msg.sender), "Tx Signer BlackListed");
+        require(!operations.isBlackListedAddress(_from), "Sender BlackListed");
+        require(!operations.isBlackListedAddress(_to), "Recipient BlackListed");
+
+        uint256 fee = (_value * basisPointsRate) / 10000;
+        if (fee > maximumFee) {
+            fee = maximumFee;
+        }
+        if (fee > 0) {
+            _transfer(_from, owner(), fee);
+        }
+
+        address spender = _msgSender();
+        _spendAllowance(_from, spender, _value);
+        _transfer(_from, _to, _value - fee);
+        return true;
+    }
+
+    function _beforeTokenTransfer(address from, address to, uint256 amount)
+        internal
+        whenNotPaused
+        override(ERC20Upgradeable, ERC20SnapshotUpgradeable)
+    {
+        super._beforeTokenTransfer(from, to, amount);
+    }
+
+    function _authorizeUpgrade(address newImplementation)
+        internal
+        onlyOwner
+        override
+    {}
+
+    // -------------------------------
+    // NFT Factory / Collections Logic
+    // -------------------------------
+
+    function updateNFTFactoryAddress(address _factoryAddress)
+        public
+        virtual
+        onlyOwner
+        returns (address)
+    {
+        nftFactoryContractAddress = _factoryAddress;
+        return _factoryAddress;
+    }
+
+    function deployNFTCollection(string memory _contractName)
+        public
+        virtual
+        onlyOwner
+        returns (address)
+    {
+        return IChatsFactory(nftFactoryContractAddress).deployCollection(_contractName);
+    }
+
+    function getCollectionAddressByIndex_(uint256 _index)
+        public
+        view
+        virtual
+        returns (address)
+    {
+        return IChatsFactory(nftFactoryContractAddress).getCollectionAddressByIndex(_index);
+    }
+
+    function getCollectionNameByIndex_(uint256 _index)
+        public
+        view
+        virtual
+        returns (string memory)
+    {
+        return IChatsFactory(nftFactoryContractAddress).getCollectionNameByIndex(_index);
+    }
+
+    // -----------------------
+    // NFT Interactions
+    // -----------------------
+
+    function getTokenURI(uint256 tokenId, uint256 _index)
+        public
+        virtual
+        returns (string memory)
+    {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        return IChatsNFT(nftContractAddress).getTokenURI(tokenId);
+    }
+
+    function NFTgetName(uint256 _index) public virtual returns (string memory) {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        return IChatsNFT(nftContractAddress).getName();
+    }
+
+    function NFTgetSymbol(uint256 _index) public virtual returns (string memory) {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        return IChatsNFT(nftContractAddress).getSymbol();
+    }
+
+    function NFTgetOwner(uint256 tokenId, uint256 _index)
+        public
+        virtual
+        returns (address)
+    {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        return IChatsNFT(nftContractAddress).getOwner(tokenId);
+    }
+
+    function NFTgetBalance(address owner, uint256 _index)
+        public
+        virtual
+        returns (uint256)
+    {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        return IChatsNFT(nftContractAddress).getBalance(owner);
+    }
+
+    function mintNFT(
+        address recipient,
+        string[] memory tokenURI,
+        uint256 _index
+    ) public virtual onlyOwner returns (bool) {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        return IChatsNFT(nftContractAddress).mintNFT(recipient, tokenURI);
+    }
+
+    function burnNFT(uint256[] memory NFTtokenId, uint256 _index)
+        public
+        virtual
+        returns (bool)
+    {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        return IChatsNFT(nftContractAddress).burnNFT(NFTtokenId);
+    }
+
+    // --- Renamed Overloads (No collision) ---
+
+    // 1) "NoData"
+    function NFTsafeTransferNoData_(
+        address from,
+        address to,
+        uint256 tokenId,
+        uint256 _index
+    ) public virtual returns (bool) {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        return IChatsNFT(nftContractAddress).safeTransferFrom_(from, to, tokenId);
+    }
+
+    // 2) "WithData"
+    function NFTsafeTransferWithData_(
+        address from,
+        address to,
+        uint256 tokenId,
+        bytes memory data,
+        uint256 _index
+    ) public virtual returns (bool) {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        // Calls safeTransferFromWithData in the NFT contract
+        return IChatsNFT(nftContractAddress).safeTransferFromWithData(
+            from,
+            to,
+            tokenId,
+            data
+        );
+    }
+
+    function NFTtransferFrom_(
+        address from,
+        address to,
+        uint256 tokenId,
+        uint256 _index
+    ) public virtual returns (bool) {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        return IChatsNFT(nftContractAddress).transferFrom_(from, to, tokenId);
+    }
+
+    function NFTapprove_(
+        address to,
+        uint256 tokenId,
+        uint256 _index
+    ) public virtual returns (bool) {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        return IChatsNFT(nftContractAddress).approve_(to, tokenId);
+    }
+
+    function NFTgetApproved_(
+        uint256 tokenId,
+        uint256 _index
+    ) public virtual returns (bool) {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        return IChatsNFT(nftContractAddress).getApproved_(tokenId);
+    }
+
+    function NFTsetApprovalForAll_(
+        address operator,
+        bool approved,
+        uint256 _index
+    ) public virtual returns (bool) {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        return IChatsNFT(nftContractAddress).setApprovalForAll_(operator, approved);
+    }
+
+    function NFTisApprovedForAll_(
+        address owner,
+        address operator,
+        uint256 _index
+    ) public virtual returns (bool) {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        return IChatsNFT(nftContractAddress).isApprovedForAll_(owner, operator);
+    }
+
+    function NFTgetTotalMinted(uint256 _index) public virtual returns (uint256) {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        return IChatsNFT(nftContractAddress).getTotalMinted();
+    }
+
+    function setNFTLimit(uint256 limit, uint256 _index) public virtual returns (bool) {
+        address nftContractAddress = getCollectionAddressByIndex_(_index);
+        return IChatsNFT(nftContractAddress).setNFTLimit(limit);
+    }
+}

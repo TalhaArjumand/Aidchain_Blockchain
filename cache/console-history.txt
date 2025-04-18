@@ -1,0 +1,56 @@
+console.log(await Chats.paused()); // Should print "false"
+await Chats.connect(owner).unpause();
+console.log(deployedCode.length > 2 ? "Contract Deployed" : "Contract Not Deployed");
+const deployedCode = await ethers.provider.getCode(Chats.address);
+console.log(await Chats.functions);
+console.log(await Chats.paused()); // Should print "true"
+await Chats.connect(owner).pause();
+await Chats.connect(owner).mint(1000, "0xYourTestAddress");
+console.log(owner.address === await Chats.owner()); // Should print "true"
+const [owner] = await ethers.getSigners();
+console.log(await Chats.owner()); 
+const Chats = await ethers.getContractAt("Chats", "0x59d3631c86BbE35EF041872d502F218A39FBa150", signer);
+const [signer] = await ethers.getSigners();
+console.log("Total Chats: ", chatCount.toString());
+const chatCount = await Chats.getChatCount();
+const Chats = await ethers.getContractAt("Chats", "0x59d3631c86BbE35EF041872d502F218A39FBa150");
+console.log(deployedCode);
+const deployedCode = await ethers.provider.getCode("0x59d3631c86BbE35EF041872d502F218A39FBa150");
+console.log(Chats);
+const Chats = await ethers.getContractAt("Chats", "0x59d3631c86BbE35EF041872d502F218A39FBa150");
+await Chats.createChat("Hello, blockchain!");
+const Chats = await ethers.getContractAt("Chats", "0x59d3631c86BbE35EF041872d502F218A39FBa150");
+console.log("📌 Updated User's Funded Amount:", ethers.utils.formatEther(updatedFundAmount));
+const updatedFundAmount = await escrow.getFundAmount(userSigner.address);
+console.log("✅ User successfully withdrew 0.5 MATIC.");
+await escrow.connect(userSigner).withdrawFunds(ethers.utils.parseEther("0.5"));
+console.log("📌 Is withdrawal approved?:", isApproved);
+const isApproved = await escrow.WithdrawalApprovalStatus(userSigner.address);
+console.log("✅ Withdrawal approved for user!");
+await escrow.adminSignatory(userSigner.address);
+console.log("📌 Can user withdraw funds?:", isAvailable);
+const isAvailable = await escrow.getFundAvailability(userSigner.address);
+console.log("📌 User's Funded Amount:", ethers.utils.formatEther(fundAmount));
+const fundAmount = await escrow.getFundAmount(userSigner.address);
+console.log("✅ User successfully funded 1 MATIC.");
+await escrow.connect(userSigner).fundCampaignMatic({ value: ethers.utils.parseEther("1") });
+console.log("✅ User Address:", userSigner.address);
+);
+    ethers.provider
+    "0x6cbed15c793ce57650b9877cf6fa156fbef513c4e6134f022a85b1ffdd59b2a1", // Private key of Ganache Account #1
+const userSigner = new ethers.Wallet(
+console.log("✅ Escrow Contract attached:", escrow.address);
+const escrow = await ethers.getContractAt("chatsEscrow", escrowAddress);
+console.log("📌 Escrow Address:", escrowAddress);
+const escrowAddress = await factory.escrows(0);
+console.log("✅ Escrow campaign deployed!");
+await tx.wait();
+);
+    "0x5b1869D9A4C187F2EAa108f3062412ecf0526b24" // Operations Contract Address
+    "Test Campaign", // Campaign Name
+    "0x5b1869D9A4C187F2EAa108f3062412ecf0526b24", // Quickswap Router Address (Dummy for Ganache)
+    "0x5b1869D9A4C187F2EAa108f3062412ecf0526b24", // WMATIC Contract Address (Dummy for Ganache)
+    "0x5b1869D9A4C187F2EAa108f3062412ecf0526b24", // Uniswap Router Address (Dummy for Ganache)
+const tx = await factory.deployEscrow(
+console.log("Factory Address:", factory.address);
+const factory = await ethers.getContractAt("chatsEscrowFactory", "0xC89Ce4735882C9F0f0FE26686c53074E09B0D550");
