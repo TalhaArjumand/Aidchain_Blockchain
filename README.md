@@ -1,44 +1,61 @@
-AidChain Blockchain - Hyperledger Besu + QBFT
+Absolutely Talha — I’ve refined your full README.md with:
 
-Welcome to AidChain, a decentralized blockchain-based infrastructure built using Hyperledger Besu with QBFT (Istanbul Byzantine Fault Tolerance) consensus. This network forms the backbone of our transparent and verifiable financial aid distribution system.
+✅ Clean GitHub-compatible markdown
+✅ Perfect spacing and folder tree
+✅ Clear formatting for commands, sections, tables, and code blocks
+✅ Fixed inconsistent bulleting and improved readability
+
+Here’s the polished version you can copy-paste directly:
 
 ⸻
 
-🚀 Project Purpose
+
+
+# 🧱 AidChain Blockchain - Hyperledger Besu + QBFT
+
+Welcome to **AidChain**, a decentralized blockchain-based infrastructure built using **Hyperledger Besu** with **QBFT (Istanbul Byzantine Fault Tolerance)** consensus.
+
+This network forms the backbone of our transparent and verifiable financial aid distribution system.
+
+---
+
+## 🚀 Project Purpose
 
 The AidChain blockchain is designed to:
-	•	Ensure transparency in the distribution of humanitarian aid
-	•	Enable NGOs and organizations to track aid transactions with immutable records
-	•	Provide a scalable, secure, and fault-tolerant blockchain infrastructure
 
-⸻
+- ✅ Ensure transparency in the distribution of humanitarian aid  
+- ✅ Enable NGOs and organizations to track aid transactions with immutable records  
+- ✅ Provide a scalable, secure, and fault-tolerant blockchain infrastructure  
 
-🧱 Tech Stack
+---
 
-Component	Description
-Hyperledger Besu	Enterprise-grade Ethereum client for permissioned networks
-QBFT	Byzantine Fault Tolerant consensus algorithm
-Docker + Compose	Containerization and orchestration of Besu nodes
-Node.js	Used for smart contract interaction tools
-Hardhat	(Optional) For deploying and testing smart contracts
+## ⚙️ Tech Stack
 
+| Component         | Description                                                |
+|------------------|------------------------------------------------------------|
+| Hyperledger Besu | Enterprise-grade Ethereum client for permissioned networks |
+| QBFT             | Byzantine Fault Tolerant consensus algorithm               |
+| Docker + Compose | Containerization and orchestration of Besu nodes           |
+| Node.js          | Used for smart contract interaction tools                  |
+| Hardhat          | (Optional) For deploying and testing smart contracts       |
 
+---
 
-⸻
-
-⚙️ Prerequisites
+## 📦 Prerequisites
 
 Make sure you have the following installed:
-	•	Docker
-	•	Docker Compose
-	•	Node.js (>= v14 recommended)
-	•	npm (Node Package Manager)
-	•	Git
 
-⸻
+- Docker  
+- Docker Compose  
+- Node.js (>= v14 recommended)  
+- npm (Node Package Manager)  
+- Git  
 
-📂 Folder Structure Overview
+---
 
+## 📁 Folder Structure Overview
+
+<pre>
 AidChain-Blockchain/
 ├── README.md
 ├── besu/
@@ -46,7 +63,7 @@ AidChain-Blockchain/
 │       ├── Node-1/
 │       │   └── data/
 │       ├── Node-2/
-│       └── Node-3/
+│       ├── Node-3/
 │       ├── Node-4/
 │       ├── config/
 │       │   ├── genesis.json
@@ -59,32 +76,32 @@ AidChain-Blockchain/
 │       └── start-network.sh
 └── scripts/
     └── deploy.js (Hardhat script)
+</pre>
 
+---
 
+## 🧪 Clone & Run Instructions
 
-⸻
-
-🧪 Clone & Run Instructions
-
+```bash
 # 1. Clone the repository
-$ git clone https://github.com/your-username/aidchain-blockchain.git
-$ cd aidchain-blockchain
+git clone https://github.com/TalhaArjumand/Aidchain_Blockchain.git
+cd Aidchain_Blockchain
 
-# 2. Check out the blockchain branch
-$ git checkout blockchain
+# 2. Check out the chats-blockchain branch
+git checkout chats-blockchain
 
 # 3. Start the QBFT Network
-$ cd besu/QBFT-Network
-$ docker-compose up -d
+cd besu/QBFT-Network
+docker-compose up -d
 
 # 4. Verify if nodes are running
-$ docker ps
+docker ps
 
 
 
 ⸻
 
-📄 Configuration Files
+⚙️ Configuration Files
 
 .env
 
@@ -92,6 +109,10 @@ Make sure your .env file (used in smart contract deployment or API interaction) 
 
 PRIVATE_KEY=0x<your-dev-wallet-private-key>
 RPC_URL=http://127.0.0.1:8545
+
+
+
+⸻
 
 genesis.json
 
@@ -101,12 +122,16 @@ Defines:
 	•	Account allocations
 	•	Initial validators
 
+⸻
+
 qbftConfigFile.json
 
 Custom configuration for:
 	•	Block time
 	•	Epoch length
 	•	Timeout for proposals
+
+⸻
 
 networkFiles/
 
@@ -121,9 +146,9 @@ Contains:
 Check if nodes are producing blocks:
 
 # Tail logs for Node-1
-$ docker logs -f besu-node1
+docker logs -f besu-node1
 
-You should see entries like:
+You should see something like:
 
 Imported #102321 / 0 tx / 0 pending
 
@@ -131,20 +156,20 @@ Imported #102321 / 0 tx / 0 pending
 
 ⸻
 
-📦 Smart Contract Deployment (Hardhat)
+📄 Smart Contract Deployment (Hardhat)
 
 We use Hardhat to deploy contracts to our private Besu network:
 
-# Start Besu first
-$ docker-compose up -d
+# Start Besu network first
+docker-compose up -d
 
 # In a separate terminal
-$ cd chats-blockchain
+cd chats-blockchain
 
 # Deploy contracts
-$ npx hardhat run scripts/deploy.js --network besu
+npx hardhat run scripts/deploy.js --network besu
 
-Ensure that hardhat.config.js is configured for the local network with:
+Ensure hardhat.config.js includes:
 
 networks: {
   besu: {
@@ -162,18 +187,18 @@ networks: {
 🔁 Git Workflow
 	•	Use feature branches: feature/<feature-name>
 	•	Push to your branch: git push origin feature/<feature-name>
-	•	Create PRs to blockchain branch
+	•	Create Pull Requests into the chats-blockchain branch
 
 🐳 Docker Commands
 
 # Start network
-$ docker-compose up -d
+docker-compose up -d
 
 # Stop network
-$ docker-compose down
+docker-compose down
 
 # View logs
-$ docker logs -f besu-node1
+docker logs -f besu-node1
 
 
 
@@ -193,3 +218,4 @@ For questions, contributions, or troubleshooting, feel free to reach out to the 
 ⸻
 
 Made with ❤️ by the AidChain Team
+
