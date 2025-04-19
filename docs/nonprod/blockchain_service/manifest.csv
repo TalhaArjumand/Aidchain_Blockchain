@@ -50,3 +50,4 @@ date,focus,case_file,note_file
 2025-04-16,"Event/indexing/storage alignment with API",tests/nonprod/blockchain_service/cases/2025-04-16.json,docs/nonprod/blockchain_service/daily/2025-04-16.md
 2025-04-17,"Queue-triggered on-chain tx workflow checks",tests/nonprod/blockchain_service/cases/2025-04-17.json,docs/nonprod/blockchain_service/daily/2025-04-17.md
 2025-04-18,"Contract tests + end-to-end tx verification",tests/nonprod/blockchain_service/cases/2025-04-18.json,docs/nonprod/blockchain_service/daily/2025-04-18.md
+2025-04-19,"Gas/nonce/permission bug fixes and cleanup",tests/nonprod/blockchain_service/cases/2025-04-19.json,docs/nonprod/blockchain_service/daily/2025-04-19.md
