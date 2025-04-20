@@ -1,0 +1,12 @@
+{
+  "date": "2025-04-20",
+  "pair": "blockchain+api",
+  "focus": "Blockchain README/runbook/env docs refresh",
+  "repo": "Aidchain_Blockchain",
+  "objective": "Non-production validation fixture for blockchain readme/runbook/env docs refresh",
+  "checklist": [
+    "confirm non-production scripts execute",
+    "confirm fixture schema stays stable",
+    "confirm no runtime source files are modified"
+  ]
+}
