@@ -1,8 +1,13 @@
 const { Config } = require("../utils");
 const { ethers, Contract } = require("ethers");
 const { NonceManager } = require("@ethersproject/experimental");
-const provider = new ethers.providers.getDefaultProvider(Config.BLOCKCHAINSERV);
+const { StaticJsonRpcProvider } = require("ethers").providers;
 
+
+const provider = new StaticJsonRpcProvider(
+  { url: Config.BLOCKCHAINSERV || "http://127.0.0.1:8545", timeout: 20000 },
+  { name: "local", chainId: 1337 }
+);
 async function wallet(_pkey) {
   const wallet = new ethers.Wallet(_pkey, provider);
   return wallet;

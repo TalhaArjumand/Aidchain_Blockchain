@@ -197,6 +197,26 @@ exports.balanceOf = async (_account) => {
 //////////      Get User Groups        ////////////
 
 /**
+ * @name checkUserList
+ * @description Checks if the given address is in the users whitelist
+ * 
+ * @param {string} _account Address to check
+ * @returns {bool} true if whitelisted
+ */
+exports.checkUserList = async (_account) => {
+  try {
+    const result = await getOpsContract.CheckUserList(_account);
+    return result;
+  } catch (error) {
+    const err = {
+      name: "Web3-checkUserList",
+      error: error.message,
+    };
+    throw err;
+  }
+};
+
+/**
  * @name GetUsersList
  * @description This is to know all registered accounts
  * 
@@ -282,7 +302,7 @@ exports.getBlackListed = async () => {
  */
 exports.isUserListed = async (_account) => {
   try {
-    const result = await getTokenContract.isUserListed(_account);
+    const result = await getOpsContract.isUserListed(_account); // ✅ Fixed here
     return result;
   } catch (error) {
     const err = {
@@ -301,8 +321,7 @@ exports.isUserListed = async (_account) => {
  */
 exports.isAdmin = async (_account) => {
   try {
-    const result = await getTokenContract.isAdmin(_account);
-    return result;
+    const result = await getOpsContract.isAdmin(_account);   // ✅    return result;
   } catch (error) {
     const err = {
       name: "Web3-isAdmin",
@@ -320,7 +339,8 @@ exports.isAdmin = async (_account) => {
  */
 exports.isAuthorizer = async (_account) => {
   try {
-    const result = await getTokenContract.isAuthorizer(_account);
+    const contract = getOpsContract;
+    const result = await contract.isAuthorizer(_account);
     return result;
   } catch (error) {
     const err = {
@@ -563,3 +583,25 @@ exports.getFundAmount = async (escrowContractAddress, funderAddress) => {
 };
 
 
+
+/**
+ * @notice Get Token Symbol
+ */
+exports.getSymbol = async () => {
+  try {
+    return await getTokenContract.symbol();
+  } catch (error) {
+    throw new Error("Error fetching Token Symbol");
+  }
+};
+
+/**
+ * @notice Get Token Decimals
+ */
+exports.getDecimals = async () => {
+  try {
+    return await getTokenContract.decimals();
+  } catch (error) {
+    throw new Error("Error fetching Token Decimals");
+  }
+};

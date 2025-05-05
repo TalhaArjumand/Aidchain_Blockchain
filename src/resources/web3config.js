@@ -2,6 +2,14 @@ const { Config } = require("../utils");
 const fs = require("fs");
 const path = require("path");
 const { ethers } = require("ethers");
+console.log("🔌 Using RPC URL:", Config.RPC_URL);
+
+const { StaticJsonRpcProvider } = require("ethers").providers;
+
+const provider = new StaticJsonRpcProvider(
+  { url: Config.RPC_URL, timeout: 20000 },
+  { name: "ganache", chainId: 1337 }
+);
 
 // ✅ Use absolute path for reading artifact files
 const getArtifact = (filename) =>
@@ -12,9 +20,8 @@ const getArtifact = (filename) =>
     )
   )['abi'];
 
-const provider = new ethers.providers.JsonRpcProvider(Config.RPC_URL || "http://127.0.0.1:8545");
 
-  console.log("Contract Address:", Config.CONTRACTADDR);
+console.log("Contract Address:", Config.CONTRACTADDR);
 console.log("Full Config:", Config);
 console.log("Escrow Factory Address:", Config.ESCROWFACTORYCONTRACT);
 
